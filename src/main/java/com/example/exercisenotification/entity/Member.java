@@ -6,12 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Member {
 
@@ -19,6 +18,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String username;
     private String password;
 
@@ -29,9 +29,17 @@ public class Member {
     }
 
     @ElementCollection(fetch = FetchType.LAZY)
-    private Set<MemberRole> roleSet;
+    private Set<MemberRole> roleSet = new HashSet<>();
 
     public void addMemberRole(MemberRole memberRole){
         roleSet.add(memberRole);
+    }
+
+    @Builder
+    public Member(Long id, String username, String password, Set<MemberRole> roleSet) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roleSet = roleSet;
     }
 }
